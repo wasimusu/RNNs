@@ -12,13 +12,7 @@ def generate_data(N, sigma):
     """ Generate data with given number of points N and sigma """
     noise = np.random.normal(0, sigma, N)
     X = np.random.uniform(0, 3, N)
-
-    # More work required to make it work on this. Works decently.
-    Y = 2 * X ** 2 + 3 * X + 1 + noise  # Compute y from x
-
-    # Works better on this
-    # Y = X * 2 + 1 + noise  # Compute y from x
-
+    Y = 2 * X ** 2 + 3 * X + 1 + noise  # arbitrary function
     return X, Y
 
 
