@@ -1,5 +1,5 @@
 """
-RNNs to train parts of speech tagger
+RNNs to classify sentences as exclamation, question or statement.
 """
 
 import math
@@ -62,15 +62,16 @@ class DataIteratior:
         return self.num_batches
 
 
-class Tagger(nn.Module):
+class SentenceClassifier(nn.Module):
     def __init__(self, vocab_size, num_layers, num_directions, hidden_dim, output_dim, batch_size):
-        super(Tagger, self).__init__()
+        super(SentenceClassifier, self).__init__()
+
         self.num_layers = num_layers
         self.num_directions = num_directions
         self.hidden_dim = hidden_dim
         self.batch_size = batch_size
 
-        self.lstm = nn.LSTM(hidden_dim, hidden_dim, bidirectional=True if self.num_directions != 1 else False)
+        self.lstm = nn.LSTM(hidden_dim, hidden_dim)
         self.linear = nn.Linear(hidden_dim, output_dim)
         self.embeddings = nn.Embedding(vocab_size, hidden_dim)
 
@@ -101,7 +102,7 @@ output_dim = 3
 
 device = ('cuda' if torch.cuda.is_available() else 'cpu')
 
-model = Tagger(vocab_size, num_layers, num_directions, hidden_dim, output_dim, batch_size).to(device)
+model = SentenceClassifier(vocab_size, num_layers, num_directions, hidden_dim, output_dim, batch_size).to(device)
 criterion = nn.CrossEntropyLoss().to(device)
 optimizer = optim.SGD(params=model.parameters(), lr=0.1)
 
@@ -128,4 +129,4 @@ for epoch in range(num_epoch):
     if epoch % 2 == 0:
         print("Epoch  {}/{} \tLoss : {}".format(epoch, num_epoch, "%.2f" % epoch_loss.item()))
 
-torch.save(model.parameters(), "tagger_model")
+torch.save(model.parameters(), "SentenceClassifier_model")

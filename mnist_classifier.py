@@ -1,5 +1,5 @@
 """
-MNIST being trained by using Fully connected layer
+MNIST being trained by using RNNs
 Concepts used :
  - Using pretrained networks
  - Dropout
@@ -20,16 +20,16 @@ import os
 # Softmax requires especially low learning rates
 learning_rate = 0.05
 momentum = 0.1
-batch_size = 64
+batch_size = 32
 dropout = 0.0
 reuse_model = True
-delta_loss = 0.0001  # The minimum threshold differences required between two consecutive epoch to continue training
+delta_loss = 0.01  # The minimum threshold differences required between two consecutive epoch to continue training
 
 l2 = 0.99
 
 device = ('cuda' if torch.cuda.is_available() else 'cpu')
 
-filename = "rnn_mnist"
+filename = "model/rnn_mnist_model"
 
 
 def getAccuracy(dataLoader):
@@ -61,20 +61,17 @@ class MnistNet(nn.Module):
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.batch_size = batch_size
-        self.bidirectional = False
         self.num_layers = 1
-        self.num_directions = 2 if self.bidirectional else 1
+        self.num_directions = 1
 
-        self.lstm = nn.LSTM(input_dim, hidden_dim, bidirectional=self.bidirectional)
-
-        self.classifier = nn.Linear(hidden_dim, num_classes)
+        self.lstm = nn.LSTM(input_dim, hidden_dim)
+        self.fc = nn.Linear(hidden_dim, num_classes)
 
         self.hidden = self.initHidden()
 
     def forward(self, x):
         x = x.view(1, batch_size, -1)
         x, self.hidden = self.lstm(x, self.hidden)
-        # Images are not being processed alone, they're processed in batches
 
         x = x.view(-1, self.hidden_dim)
         x = self.classifier(x)
@@ -128,7 +125,7 @@ prev_epoch_loss = 20
 epoch = 1
 while abs(prev_epoch_loss - cur_epoch_loss) >= delta_loss:
     epoch_loss = 0
-    for i, data in enumerate(testloader):
+    for i, data in enumerate(trainloader):
         inputs, labels = data
 
         inputs = inputs.to(device).squeeze(1)
@@ -149,7 +146,7 @@ while abs(prev_epoch_loss - cur_epoch_loss) >= delta_loss:
     print("{} Epoch. Loss : {}".format(epoch, "%.3f" % epoch_loss))
 
     # Every ten epochs compute validation accuracy
-    if epoch % 2 == 0:
+    if epoch % 10 == 0:
         print("{} Epoch. Accuracy on validation set : {}".format(epoch, "%.3f" % getAccuracy(validationloader)))
 
     # Save the model every ten epochs

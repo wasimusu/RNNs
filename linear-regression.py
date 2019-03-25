@@ -22,15 +22,16 @@ def generate_data(N, sigma):
     return X, Y
 
 
-class Sine(nn.Module):
+class Regression(nn.Module):
     def __init__(self, input_dim, num_layers, num_directions, hidden_dim, output_dim, batch_size):
-        super(Sine, self).__init__()
+        super(Regression, self).__init__()
+
         self.num_layers = num_layers
         self.num_directions = num_directions
         self.hidden_dim = hidden_dim
         self.batch_size = batch_size
 
-        self.lstm = nn.LSTM(input_dim, hidden_dim, bidirectional=True if self.num_directions != 1 else False)
+        self.lstm = nn.LSTM(input_dim, hidden_dim)
         self.linear = nn.Linear(hidden_dim, output_dim)
 
         self.hidden = self.initHidden()
@@ -55,7 +56,7 @@ hidden_dim = 80
 output_dim = 1
 batch_size = 8
 
-model = Sine(input_dim, num_layers, num_directions, hidden_dim, output_dim, batch_size)
+model = Regression(input_dim, num_layers, num_directions, hidden_dim, output_dim, batch_size)
 criterion = nn.MSELoss()
 optimizer = optim.SGD(params=model.parameters(), lr=0.1)
 
