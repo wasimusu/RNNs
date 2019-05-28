@@ -30,14 +30,14 @@ class Regression(nn.Module):
         self.hidden_dim = hidden_dim
         self.batch_size = batch_size
 
-        self.lstm = nn.LSTM(input_dim, hidden_dim, bidirectional=bidiectional, num_layers=num_layers)
+        self.features = nn.LSTM(input_dim, hidden_dim, bidirectional=bidiectional, num_layers=num_layers)
         self.linear = nn.Linear(hidden_dim * self.num_directions, output_dim)
 
         self.hidden = self.initHidden()
 
     def forward(self, x):
         """ Take x in degrees """
-        x, self.hidden = self.lstm(x, self.hidden)
+        x, self.hidden = self.features(x, self.hidden)
         x = F.relu(x)
         x = self.linear(x)
         return x
