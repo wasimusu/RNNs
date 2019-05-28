@@ -1,5 +1,9 @@
-import math
-import random
+"""
+This program shows demonstrates setting up a RNN / LSTM / GRU with the following configurable parameters:
+- number of layers
+- bidirectional or not
+- relation of number of layers and bidirectionality to the hidden state and output of RNN
+"""
 
 import torch
 import torch.nn as nn
@@ -17,16 +21,17 @@ def generate_data(N, sigma):
 
 
 class Regression(nn.Module):
-    def __init__(self, input_dim, num_layers, num_directions, hidden_dim, output_dim, batch_size):
+    def __init__(self, input_dim, hidden_dim, output_dim, batch_size, num_layers=1, bidiectional=False):
         super(Regression, self).__init__()
 
+        # RNN Parameters
         self.num_layers = num_layers
-        self.num_directions = num_directions
+        self.num_directions = 2 if bidiectional else 1
         self.hidden_dim = hidden_dim
         self.batch_size = batch_size
 
-        self.lstm = nn.LSTM(input_dim, hidden_dim)
-        self.linear = nn.Linear(hidden_dim, output_dim)
+        self.lstm = nn.LSTM(input_dim, hidden_dim, bidirectional=bidiectional, num_layers=num_layers)
+        self.linear = nn.Linear(hidden_dim * self.num_directions, output_dim)
 
         self.hidden = self.initHidden()
 
@@ -43,14 +48,21 @@ class Regression(nn.Module):
 
 
 # Parameters of the model
+# You can change any of the parameters and expect the network to run without error
 input_dim = 1
 num_layers = 1
-num_directions = 1
+bidirectional = False
 hidden_dim = 80
 output_dim = 1
 batch_size = 8
 
-model = Regression(input_dim, num_layers, num_directions, hidden_dim, output_dim, batch_size)
+model = Regression(input_dim,
+                   hidden_dim,
+                   output_dim,
+                   batch_size,
+                   num_layers=num_layers,
+                   bidiectional=bidirectional)
+
 criterion = nn.MSELoss()
 optimizer = optim.SGD(params=model.parameters(), lr=0.1)
 
