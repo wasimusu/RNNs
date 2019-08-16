@@ -7,14 +7,14 @@ Here we cover the following topics
 - The programs are self contained for ease of understanding
 - Using dropout in images classification
 
-### Numerical Regression using LSTM
+### Numerical Regression using LSTM / RNN
 - Setting up bidirectional and multilayer RNNs.
 - Testing out different activation functions because numerical regression is different from other tasks like
 classification and thus demands a bit different activation function
 - L2 regularization
 - filename : [linear_regression.py](https://github.com/wasimusu/RNNs/blob/master/linear_regression.py)
 
-### MNIST Handwritten digit classifier using LSTM
+### MNIST Handwritten digit classifier using LSTM / RNN
 - L2 regularization
 - Using dropout in image classification
 - Saving and restoring models
@@ -23,7 +23,7 @@ classification and thus demands a bit different activation function
 - Setting up bidirectional and multilayer RNNs.
 - filename : [mnist_classifier.py](https://github.com/wasimusu/RNNs/blob/master/mnist_classifier.py)
 
-### MNIST Handwritten digit classifier using GRU
+### MNIST Handwritten digit classifier using GRU / RNN
 - Same as above but uses Gated Recurrent Unit (GRU)
 - filename : [mnist_classifier.py](https://github.com/wasimusu/RNNs/blob/master/mnist_classifier_gru.py)
 
